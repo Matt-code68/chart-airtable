@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chart Airtable</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    canvas { max-width: 800px; margin: auto; display: block; }
+    select { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <h2>Chiffre d'affaires </h2>
+  <label for="granularity">Granularité :</label>
+  <select id="granularity">
+    <option value="day">Jour</option>
+    <option value="week">Semaine</option>
+    <option value="month" selected>Mois</option>
+    <option value="year">Année</option>
+  </select>
+  <canvas id="myChart"></canvas>
+
+  <script>
+    const url = '/.netlify/functions/seances';
+
+    async function fetchData() {
+      const res = await fetch(url);
+      const data = await res.json();
+      const records = data.map(record => ({
+        date: record.date,
+        amount: record.amount
+      })).filter(r => r.date && r.amount);
+      console.log("Données reçues du serveur Netlify :", records);
+      return records;
+    }
+
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${d.getUTCFullYear()}-W${weekNo}`;
+    }
+
+    function groupBy(records, granularity) {
+      const result = {};
+      for (const r of records) {
+        const d = new Date(r.date);
+        let key;
+        if (granularity === 'day') key = d.toLocaleDateString();
+        else if (granularity === 'week') key = getWeekNumber(d);
+        else if (granularity === 'month') key = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}`;
+        else key = `${d.getFullYear()}`;
+        result[key] = (result[key] || 0) + r.amount;
+      }
+      return result;
+    }
+
+    let chart;
+
+    async function renderChart(granularity) {
+      const raw = await fetchData();
+      const grouped = groupBy(raw, granularity);
+      const labels = Object.keys(grouped).sort();
+      const data = labels.map(l => grouped[l]);
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(document.getElementById('myChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Chiffre d'affaires",
+            data: data,
+            backgroundColor: '#4285F4'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: {
+                maxRotation: 90,
+                minRotation: 45
+              }
+            }
+          }
+        }
+      });
+    }
+
+    document.getElementById('granularity').addEventListener('change', (e) => {
+      renderChart(e.target.value);
+    });
+
+    renderChart('month');
+  </script>
+</body>
+</html>
