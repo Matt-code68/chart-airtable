@@ -1,6 +1,6 @@
 exports.handler = async function(event, context) {
   const apiKey = process.env.KEY_AIRTABLE;
-  const url = 'https://api.airtable.com/v0/appGvLvD3Rprsv2hs/Seances_filtrees';
+  const url = 'https://api.airtable.com/v0/appGvLvD3Rprsv2hs/Seances?view=Seances_Filtrees';
 
   try {
     const res = await fetch(url, {
