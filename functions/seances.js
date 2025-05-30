@@ -12,7 +12,7 @@ exports.handler = async function(event, context) {
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("Erreur API Airtable : ", errorText);
+      console.error("❌ Erreur API Airtable :", errorText);
       return {
         statusCode: res.status,
         body: JSON.stringify({ error: "Airtable API error", detail: errorText })
@@ -21,8 +21,8 @@ exports.handler = async function(event, context) {
 
     const data = await res.json();
 
-    if (!data.records) {
-      console.error("Réponse inattendue :", data);
+    if (!data.records || !Array.isArray(data.records)) {
+      console.error("❌ Réponse inattendue :", data);
       return {
         statusCode: 500,
         body: JSON.stringify({ error: "No records found", raw: data })
@@ -31,8 +31,8 @@ exports.handler = async function(event, context) {
 
     const cleaned = data.records
       .map(record => ({
-        date: record.fields.Date_seance,
-        amount: record.fields.Montant_seance_dashboard
+        date: record.fields?.Date_seance || null,
+        amount: record.fields?.Montant_seance_dashboard || null
       }))
       .filter(r => r.date && r.amount);
 
@@ -42,7 +42,7 @@ exports.handler = async function(event, context) {
     };
 
   } catch (err) {
-    console.error("Erreur dans la fonction serverless :", err);
+    console.error("❌ Erreur dans la fonction serverless :", err);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Server error", detail: err.message })
