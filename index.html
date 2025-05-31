@@ -24,7 +24,7 @@
 
     canvas {
       width: 100% !important;
-      height: auto !important;
+      height: 400px !important; /* ✅ Hauteur fixe */
     }
   </style>
 </head>
@@ -99,7 +99,6 @@
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
           plugins: {
             legend: { display: false }
           },
