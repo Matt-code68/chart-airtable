@@ -12,16 +12,8 @@
       margin: 0;
     }
 
-    h2 {
-      color: rgb(190, 183, 254);
-      text-align: center;
-    }
-
     select {
       margin-bottom: 1rem;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     #chart-container {
@@ -37,16 +29,14 @@
   </style>
 </head>
 <body>
-  <h2>Chiffre d'affaires</h2>
-  <label for="granularity">Granularité :</label>
-  <select id="granularity">
-    <option value="day">Jour</option>
-    <option value="week">Semaine</option>
-    <option value="month" selected>Mois</option>
-    <option value="year">Année</option>
-  </select>
 
   <div id="chart-container">
+    <select id="granularity">
+      <option value="day">Jour</option>
+      <option value="week">Semaine</option>
+      <option value="month" selected>Mois</option>
+      <option value="year">Année</option>
+    </select>
     <canvas id="myChart"></canvas>
   </div>
 
@@ -118,6 +108,17 @@
               ticks: {
                 maxRotation: 90,
                 minRotation: 45
+              },
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              grid: {
+                drawTicks: false,
+                color: function(context) {
+                  return context.tick.value === 0 ? '#ccc' : 'transparent';
+                }
               }
             }
           }
