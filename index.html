@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chart Airtable</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: sans-serif;
-      padding: 2rem;
       margin: 0;
+      padding: 2rem;
     }
 
-    select {
+    #granularity {
       margin-bottom: 1rem;
+      display: block;
     }
 
     #chart-container {
       width: 100%;
       max-width: 1000px;
       margin: auto;
+      height: 400px; /* ✅ hauteur fixe */
+      position: relative;
     }
 
     canvas {
       width: 100% !important;
-      height: 400px !important; /* ✅ Hauteur fixe */
+      height: 100% !important;
     }
   </style>
 </head>
 <body>
+  <select id="granularity">
+    <option value="day">Jour</option>
+    <option value="week">Semaine</option>
+    <option value="month" selected>Mois</option>
+    <option value="year">Année</option>
+  </select>
 
   <div id="chart-container">
-    <select id="granularity">
-      <option value="day">Jour</option>
-      <option value="week">Semaine</option>
-      <option value="month" selected>Mois</option>
-      <option value="year">Année</option>
-    </select>
     <canvas id="myChart"></canvas>
   </div>
 
@@ -46,12 +49,12 @@
     async function fetchData() {
       const res = await fetch(url);
       const data = await res.json();
-      const records = data.map(record => ({
-        date: record.date,
-        amount: record.amount
-      })).filter(r => r.date && r.amount);
-      console.log("Données reçues du serveur Netlify :", records);
-      return records;
+      return data
+        .map(record => ({
+          date: record.date,
+          amount: record.amount
+        }))
+        .filter(r => r.date && r.amount);
     }
 
     function getWeekNumber(d) {
@@ -99,6 +102,7 @@
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { display: false }
           },
@@ -106,18 +110,23 @@
             x: {
               ticks: {
                 maxRotation: 90,
-                minRotation: 45
-              },
-              grid: {
-                display: false
+                minRotation: 45,
+                font: ctx => ({
+                  size: Math.max(10, Math.round(ctx.chart.width / 60))
+                })
               }
             },
             y: {
               grid: {
-                drawTicks: false,
-                color: function(context) {
-                  return context.tick.value === 0 ? '#ccc' : 'transparent';
-                }
+                drawTicks: true,
+                drawBorder: true,
+                drawOnChartArea: true,
+                color: (ctx) => (ctx.tick.value === 0 ? '#ccc' : 'transparent') // ✅ garde que la ligne du zéro
+              },
+              ticks: {
+                font: ctx => ({
+                  size: Math.max(10, Math.round(ctx.chart.width / 60))
+                })
               }
             }
           }
