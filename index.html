@@ -2,22 +2,42 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chart Airtable</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: sans-serif; padding: 2rem; }
-    canvas { width: 100%; max-width: 1200px; margin: auto; display: block; }
-    select { margin-bottom: 1rem; }
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      margin: 0;
+    }
 
-    /* ✅ Ajout du style pour le h2 */
-    h2 { 
-      color: rgb(190, 183, 254); /* bleu */
+    h2 {
+      color: rgb(190, 183, 254);
       text-align: center;
+    }
+
+    select {
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #chart-container {
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: auto !important;
     }
   </style>
 </head>
 <body>
-  <h2>Chiffre d'affaires </h2>
+  <h2>Chiffre d'affaires</h2>
   <label for="granularity">Granularité :</label>
   <select id="granularity">
     <option value="day">Jour</option>
@@ -25,7 +45,10 @@
     <option value="month" selected>Mois</option>
     <option value="year">Année</option>
   </select>
-  <canvas id="myChart"></canvas>
+
+  <div id="chart-container">
+    <canvas id="myChart"></canvas>
+  </div>
 
   <script>
     const url = '/.netlify/functions/seances';
@@ -86,6 +109,7 @@
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { display: false }
           },
