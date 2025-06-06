@@ -12,6 +12,18 @@
       padding: 2rem;
     }
 
+    #graph-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      padding: 1.5rem;
+      margin: 2rem auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     #granularity {
       margin-bottom: 1rem;
       display: block;
@@ -19,8 +31,6 @@
 
     #chart-container {
       width: 100%;
-      max-width: 1000px;
-      margin: auto;
       height: 400px; /* ✅ hauteur fixe */
       position: relative;
     }
@@ -32,15 +42,18 @@
   </style>
 </head>
 <body>
-  <select id="granularity">
-    <option value="day">Jour</option>
-    <option value="week">Semaine</option>
-    <option value="month" selected>Mois</option>
-    <option value="year">Année</option>
-  </select>
 
-  <div id="chart-container">
-    <canvas id="myChart"></canvas>
+  <div id="graph-card">
+    <select id="granularity">
+      <option value="day">Jour</option>
+      <option value="week">Semaine</option>
+      <option value="month" selected>Mois</option>
+      <option value="year">Année</option>
+    </select>
+
+    <div id="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
   </div>
 
   <script>
@@ -145,11 +158,11 @@
     // 🔧 Adapter dynamiquement la largeur du graphique à celle d'une carte Softr
     document.addEventListener("DOMContentLoaded", () => {
       const referenceCard = document.querySelector('[data-testid="list-item"]');
-      const chartContainer = document.getElementById('chart-container');
+      const graphCard = document.getElementById('graph-card');
 
-      if (referenceCard && chartContainer) {
+      if (referenceCard && graphCard) {
         const refWidth = referenceCard.getBoundingClientRect().width;
-        chartContainer.style.width = refWidth + "px";
+        graphCard.style.width = refWidth + "px";
       }
     });
   </script>
