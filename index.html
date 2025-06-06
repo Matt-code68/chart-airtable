@@ -14,13 +14,15 @@
     }
 
     #chart-wrapper {
-      background-color: #e6f3ff; /* Bleu ciel */
-      border-radius: 16px;
+      /* ❌ Suppression du fond et des arrondis */
+      background: transparent;
+      border-radius: 0;
       padding: 2rem;
       margin: 2rem auto;
       max-width: 1000px;
-      width: calc(100% - 32px); /* marges internes iframe */
+      width: calc(100% - 32px);
       box-sizing: border-box;
+      transition: width 0.3s ease;
     }
 
     #granularity {
@@ -109,7 +111,8 @@
           datasets: [{
             label: "Chiffre d'affaires",
             data: data,
-            backgroundColor: '#4285F4'
+            backgroundColor: '#000', // ✅ noir
+            borderRadius: 8           // ✅ coins arrondis
           }]
         },
         options: {
@@ -151,6 +154,31 @@
     });
 
     renderChart('month');
+  </script>
+
+  <!-- 🔁 Ajustement auto de la largeur de l'iframe -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const syncIframeWidth = () => {
+        try {
+          const parentDoc = window.parent.document;
+          const iframe = [...parentDoc.querySelectorAll('iframe')].find(f => f.src.includes('chart-airtable'));
+          const periodeCard = parentDoc.querySelector('[data-testid="list-item"]:has(h2), [data-testid="list-item"]:has(button)');
+
+          if (iframe && periodeCard) {
+            const width = periodeCard.getBoundingClientRect().width;
+            iframe.style.width = width + "px";
+            iframe.style.margin = "0 auto";
+          }
+        } catch (e) {
+          console.warn("❌ Impossible d'accéder au parent : sécurité cross-origin");
+        }
+      };
+
+      syncIframeWidth();
+      setTimeout(syncIframeWidth, 500);
+      window.addEventListener("resize", syncIframeWidth);
+    });
   </script>
 </body>
 </html>
