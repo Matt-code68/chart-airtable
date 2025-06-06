@@ -14,12 +14,12 @@
     }
 
     #chart-wrapper {
-      background-color: #e6f3ff; /* Bleu ciel */
-      border-radius: 16px;
+      background: transparent; /* ✅ suppression du bleu ciel */
+      border-radius: 0;
       padding: 2rem;
       margin: 2rem auto;
       max-width: 1000px;
-      width: calc(100% - 32px); /* marges internes iframe */
+      width: calc(100% - 32px);
       box-sizing: border-box;
     }
 
@@ -109,7 +109,13 @@
           datasets: [{
             label: "Chiffre d'affaires",
             data: data,
-            backgroundColor: '#4285F4'
+            backgroundColor: '#4285F4',
+            borderRadius: {
+              topLeft: 8,   // ✅ coins arrondis en haut à gauche
+              topRight: 8,  // ✅ coins arrondis en haut à droite
+              bottomLeft: 0,
+              bottomRight: 0
+            }
           }]
         },
         options: {
