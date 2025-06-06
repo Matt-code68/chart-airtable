@@ -14,13 +14,14 @@
     }
 
     #chart-wrapper {
-      background-color: #e6f3ff;
+      background-color: #e6f3ff; /* même bleu ciel */
       border-radius: 12px;
       padding: 1.5rem;
       box-sizing: border-box;
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
+      overflow: hidden; /* 🔒 masque les débordements */
     }
 
     #granularity {
@@ -37,6 +38,7 @@
     canvas {
       width: 100% !important;
       height: 100% !important;
+      background-color: transparent !important; /* ✅ important */
       display: block;
     }
   </style>
