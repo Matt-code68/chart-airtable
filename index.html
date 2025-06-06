@@ -10,42 +10,49 @@
       font-family: sans-serif;
       margin: 0;
       padding: 2rem;
-      background: #e0f0ff; /* 🎯 fond bleu ciel général */
+      background-color: #e6f3ff; /* Bleu ciel */
     }
 
-    select {
+    #chart-wrapper {
+      background-color: #e6f3ff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #granularity {
       margin-bottom: 1rem;
       display: block;
     }
 
     #chart-container {
-      background: transparent;
-      border-radius: 12px;
       width: 100%;
-      max-width: 1000px;
-      margin: auto;
       height: 400px;
       position: relative;
     }
 
     canvas {
-      background: transparent !important;
-      border-radius: 12px;
       width: 100% !important;
       height: 100% !important;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <select id="granularity">
-    <option value="day">Jour</option>
-    <option value="week">Semaine</option>
-    <option value="month" selected>Mois</option>
-    <option value="year">Année</option>
-  </select>
+  <div id="chart-wrapper">
+    <select id="granularity">
+      <option value="day">Jour</option>
+      <option value="week">Semaine</option>
+      <option value="month" selected>Mois</option>
+      <option value="year">Année</option>
+    </select>
 
-  <div id="chart-container">
-    <canvas id="myChart"></canvas>
+    <div id="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
   </div>
 
   <script>
