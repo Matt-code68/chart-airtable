@@ -14,7 +14,7 @@
     }
 
     #chart-wrapper {
-      background: transparent; /* ✅ suppression du bleu ciel */
+      background: transparent;
       border-radius: 0;
       padding: 2rem;
       margin: 2rem auto;
@@ -109,10 +109,10 @@
           datasets: [{
             label: "Chiffre d'affaires",
             data: data,
-            backgroundColor: '#4285F4',
+            backgroundColor: '#000000', // ✅ noir
             borderRadius: {
-              topLeft: 8,   // ✅ coins arrondis en haut à gauche
-              topRight: 8,  // ✅ coins arrondis en haut à droite
+              topLeft: 8,
+              topRight: 8,
               bottomLeft: 0,
               bottomRight: 0
             }
@@ -121,6 +121,10 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: {
+            duration: 1000, // ✅ durée de l’animation
+            easing: 'easeOutBounce' // ✅ effet “rebond en montant”
+          },
           plugins: {
             legend: { display: false }
           },
