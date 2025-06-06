@@ -23,17 +23,22 @@
       box-sizing: border-box;
     }
 
+    #header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
     #granularity {
-      margin-bottom: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
       font-size: 1rem;
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
     }
 
     #total-display {
       font-weight: bold;
-      margin-bottom: 1rem;
+      font-size: 1.2rem;
     }
 
     #chart-container {
@@ -53,14 +58,15 @@
 </head>
 <body>
   <div id="chart-wrapper">
-    <select id="granularity">
-      <option value="day">Jour (vu)</option>
-      <option value="week">Semaine (vu)</option>
-      <option value="month" selected>Mois (vu)</option>
-      <option value="year">Année (vu)</option>
-    </select>
-
-    <div id="total-display">Total de points : ...</div>
+    <div id="header-row">
+      <div id="total-display">Montant total : 0 €</div>
+      <select id="granularity">
+        <option value="day">Jour</option>
+        <option value="week">Semaine</option>
+        <option value="month" selected>Mois</option>
+        <option value="year">Année</option>
+      </select>
+    </div>
 
     <div id="chart-container">
       <canvas id="myChart"></canvas>
@@ -69,16 +75,12 @@
 
   <script>
     const url = '/.netlify/functions/seances';
-    let chart;
 
     async function fetchData() {
       const res = await fetch(url);
       const data = await res.json();
       return data
-        .map(record => ({
-          date: record.date,
-          amount: record.amount
-        }))
+        .map(record => ({ date: record.date, amount: record.amount }))
         .filter(r => r.date && r.amount);
     }
 
@@ -105,10 +107,7 @@
       return result;
     }
 
-    function updateTotalDisplay(dataArray) {
-      const total = dataArray.reduce((sum, val) => sum + val, 0);
-      document.getElementById('total-display').textContent = `Total de points : ${total} €`;
-    }
+    let chart;
 
     async function renderChart(granularity) {
       const raw = await fetchData();
@@ -116,7 +115,8 @@
       const labels = Object.keys(grouped).sort();
       const data = labels.map(l => grouped[l]);
 
-      updateTotalDisplay(data);
+      const total = data.reduce((sum, val) => sum + val, 0);
+      document.getElementById("total-display").textContent = `Montant total : ${total} €`;
 
       if (chart) chart.destroy();
 
@@ -139,20 +139,14 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          animation: {
-            duration: 1000
-          },
-          plugins: {
-            legend: { display: false }
-          },
+          animation: { duration: 1000 },
+          plugins: { legend: { display: false } },
           scales: {
             x: {
               ticks: {
                 maxRotation: 90,
                 minRotation: 45,
-                font: ctx => ({
-                  size: Math.max(10, Math.round(ctx.chart.width / 60))
-                })
+                font: ctx => ({ size: Math.max(10, Math.round(ctx.chart.width / 60)) })
               }
             },
             y: {
@@ -163,9 +157,7 @@
                 color: (ctx) => (ctx.tick.value === 0 ? '#ccc' : 'transparent')
               },
               ticks: {
-                font: ctx => ({
-                  size: Math.max(10, Math.round(ctx.chart.width / 60))
-                })
+                font: ctx => ({ size: Math.max(10, Math.round(ctx.chart.width / 60)) })
               }
             }
           }
