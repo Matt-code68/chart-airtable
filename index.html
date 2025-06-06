@@ -13,20 +13,27 @@
       background: transparent;
     }
 
-  #chart-wrapper {
-  background: transparent;
-  border-radius: 0;
-  padding: 1rem 2rem 2rem 2rem; /* top, right, bottom, left */
-  margin: 2rem auto;
-  max-width: 1000px;
-  width: calc(100% - 32px);
-  box-sizing: border-box;
-}
-
+    #chart-wrapper {
+      background: transparent;
+      border-radius: 0;
+      padding: 1rem 2rem 2rem 2rem;
+      margin: 2rem auto;
+      max-width: 1000px;
+      width: calc(100% - 32px);
+      box-sizing: border-box;
+    }
 
     #granularity {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       font-size: 1rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+    }
+
+    #total-display {
+      font-weight: bold;
+      margin-bottom: 1rem;
     }
 
     #chart-container {
@@ -47,11 +54,13 @@
 <body>
   <div id="chart-wrapper">
     <select id="granularity">
-      <option value="day">Jour</option>
-      <option value="week">Semaine</option>
-      <option value="month" selected>Mois</option>
-      <option value="year">Année</option>
+      <option value="day">Jour (vu)</option>
+      <option value="week">Semaine (vu)</option>
+      <option value="month" selected>Mois (vu)</option>
+      <option value="year">Année (vu)</option>
     </select>
+
+    <div id="total-display">Total de points : ...</div>
 
     <div id="chart-container">
       <canvas id="myChart"></canvas>
@@ -60,6 +69,7 @@
 
   <script>
     const url = '/.netlify/functions/seances';
+    let chart;
 
     async function fetchData() {
       const res = await fetch(url);
@@ -95,13 +105,18 @@
       return result;
     }
 
-    let chart;
+    function updateTotalDisplay(dataArray) {
+      const total = dataArray.reduce((sum, val) => sum + val, 0);
+      document.getElementById('total-display').textContent = `Total de points : ${total} €`;
+    }
 
     async function renderChart(granularity) {
       const raw = await fetchData();
       const grouped = groupBy(raw, granularity);
       const labels = Object.keys(grouped).sort();
       const data = labels.map(l => grouped[l]);
+
+      updateTotalDisplay(data);
 
       if (chart) chart.destroy();
 
