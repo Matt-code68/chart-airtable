@@ -10,18 +10,29 @@
       font-family: sans-serif;
       margin: 0;
       padding: 2rem;
+      background-color: #f9f9f9;
+    }
+
+    #graph-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      max-width: 1000px;
+      margin: 2rem auto 0;
     }
 
     #granularity {
-      margin-bottom: 1rem;
-      display: block;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
     }
 
     #chart-container {
       width: 100%;
-      max-width: 1000px;
-      margin: auto;
-      height: 400px; /* ✅ hauteur fixe */
+      height: 400px;
       position: relative;
     }
 
@@ -32,15 +43,18 @@
   </style>
 </head>
 <body>
-  <select id="granularity">
-    <option value="day">Jour</option>
-    <option value="week">Semaine</option>
-    <option value="month" selected>Mois</option>
-    <option value="year">Année</option>
-  </select>
 
-  <div id="chart-container">
-    <canvas id="myChart"></canvas>
+  <div id="graph-card">
+    <select id="granularity">
+      <option value="day">Jour</option>
+      <option value="week">Semaine</option>
+      <option value="month" selected>Mois</option>
+      <option value="year">Année</option>
+    </select>
+
+    <div id="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
   </div>
 
   <script>
@@ -121,7 +135,7 @@
                 drawTicks: true,
                 drawBorder: true,
                 drawOnChartArea: true,
-                color: (ctx) => (ctx.tick.value === 0 ? '#ccc' : 'transparent') // ✅ garde que la ligne du zéro
+                color: (ctx) => (ctx.tick.value === 0 ? '#ccc' : 'transparent')
               },
               ticks: {
                 font: ctx => ({
