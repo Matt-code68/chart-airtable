@@ -26,19 +26,36 @@
     #header-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 1rem;
     }
 
+    #granularity-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    #granularity-label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.25rem;
+    }
+
     #granularity {
-      padding: 0.5rem 1rem;
+      padding: 0.3rem 0.6rem;
       border-radius: 25px;
-      font-size: 1rem;
+      font-size: 0.9rem;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      color: #333;
+      cursor: pointer;
     }
 
     #total-display {
-      font-weight: bold;
-      font-size: 1.2rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #666;
     }
 
     #chart-container {
@@ -59,13 +76,16 @@
 <body>
   <div id="chart-wrapper">
     <div id="header-row">
-      <div id="total-display">Total Chiffre d'Affaire généré : 0 €</div>
-      <select id="granularity">
-        <option value="day">Jour</option>
-        <option value="week">Semaine</option>
-        <option value="month" selected>Mois</option>
-        <option value="year">Année</option>
-      </select>
+      <div id="total-display">Total CA généré : 0 €</div>
+      <div id="granularity-container">
+        <div id="granularity-label">Période analysée</div>
+        <select id="granularity">
+          <option value="day">Jour</option>
+          <option value="week">Semaine</option>
+          <option value="month" selected>Mois</option>
+          <option value="year">Année</option>
+        </select>
+      </div>
     </div>
 
     <div id="chart-container">
@@ -116,7 +136,7 @@
       const data = labels.map(l => grouped[l]);
 
       const total = data.reduce((sum, val) => sum + val, 0);
-      document.getElementById("total-display").textContent = `Montant total : ${total} €`;
+      document.getElementById("total-display").textContent = `Total CA généré : ${total} €`;
 
       if (chart) chart.destroy();
 
