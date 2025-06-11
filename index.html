@@ -16,8 +16,8 @@
     #chart-wrapper {
       background: transparent;
       border-radius: 0;
-      padding: 1rem 2rem 2rem 2rem;
-      margin: 2rem auto;
+      padding: 1rem 2rem;
+      margin: 0 auto;
       max-width: 1000px;
       width: calc(100% - 32px);
       box-sizing: border-box;
@@ -26,20 +26,8 @@
     #header-row {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-    }
-
-    #granularity-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    #granularity-label {
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 0.25rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
     }
 
     #granularity {
@@ -77,15 +65,12 @@
   <div id="chart-wrapper">
     <div id="header-row">
       <div id="total-display">Total CA généré : 0 €</div>
-      <div id="granularity-container">
-        <div id="granularity-label">Période analysée</div>
-        <select id="granularity">
-          <option value="day">Jour</option>
-          <option value="week">Semaine</option>
-          <option value="month" selected>Mois</option>
-          <option value="year">Année</option>
-        </select>
-      </div>
+      <select id="granularity">
+        <option value="day">Jour</option>
+        <option value="week">Semaine</option>
+        <option value="month" selected>Mois</option>
+        <option value="year">Année</option>
+      </select>
     </div>
 
     <div id="chart-container">
