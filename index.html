@@ -27,7 +27,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 1rem;
       margin-bottom: 0.5rem;
     }
 
@@ -96,7 +95,7 @@
       d.setUTCDate(d.getUTCDate() + 4 - dayNum);
       const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
       const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-      return `${d.getUTCFullYear()}-W${weekNo}`;
+      return { week: weekNo, year: d.getUTCFullYear() };
     }
 
     function groupBy(records, granularity) {
@@ -104,10 +103,16 @@
       for (const r of records) {
         const d = new Date(r.date);
         let key;
-        if (granularity === 'day') key = d.toLocaleDateString();
-        else if (granularity === 'week') key = getWeekNumber(d);
-        else if (granularity === 'month') key = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}`;
-        else key = `${d.getFullYear()}`;
+        if (granularity === 'day') {
+          key = d.toLocaleDateString('fr-FR');
+        } else if (granularity === 'week') {
+          const w = getWeekNumber(d);
+          key = `S${w.week}-${w.year}`;
+        } else if (granularity === 'month') {
+          key = `${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
+        } else {
+          key = `${d.getFullYear()}`;
+        }
         result[key] = (result[key] || 0) + r.amount;
       }
       return result;
@@ -118,9 +123,22 @@
     async function renderChart(granularity) {
       const raw = await fetchData();
       const grouped = groupBy(raw, granularity);
-      const labels = Object.keys(grouped).sort();
-      const data = labels.map(l => grouped[l]);
+      const labels = Object.keys(grouped).sort((a, b) => {
+        // Format date back to real date for sorting
+        if (granularity === 'month') {
+          const [m1, y1] = a.split('-');
+          const [m2, y2] = b.split('-');
+          return new Date(`${y1}-${m1}`) - new Date(`${y2}-${m2}`);
+        } else if (granularity === 'week') {
+          const [s1, y1] = a.split('-S').reverse();
+          const [s2, y2] = b.split('-S').reverse();
+          return new Date(`${y1}-01-01`).setDate((s1 - 1) * 7) - new Date(`${y2}-01-01`).setDate((s2 - 1) * 7);
+        } else {
+          return a.localeCompare(b);
+        }
+      });
 
+      const data = labels.map(l => grouped[l]);
       const total = data.reduce((sum, val) => sum + val, 0);
       document.getElementById("total-display").textContent = `Total CA généré : ${total} €`;
 
@@ -174,7 +192,6 @@
     document.getElementById('granularity').addEventListener('change', (e) => {
       renderChart(e.target.value);
     });
-
     renderChart('month');
   </script>
 </body>
