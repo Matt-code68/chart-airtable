@@ -124,7 +124,6 @@
       const raw = await fetchData();
       const grouped = groupBy(raw, granularity);
       const labels = Object.keys(grouped).sort((a, b) => {
-        // Format date back to real date for sorting
         if (granularity === 'month') {
           const [m1, y1] = a.split('-');
           const [m2, y2] = b.split('-');
@@ -151,7 +150,7 @@
           datasets: [{
             label: "Chiffre d'affaires",
             data: data,
-            backgroundColor: '#000000',
+            backgroundColor: '#FF7700',
             borderRadius: {
               topLeft: 8,
               topRight: 8,
